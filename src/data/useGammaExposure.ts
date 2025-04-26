@@ -7,7 +7,7 @@ type GammaPoint = {
 
 const STRIKE_MIN = 4000
 const STRIKE_MAX = 6200
-const STEP = 1
+const STEP = 25
 const BASE_VOL = 40_000_000
 
 const generateInitialGamma = (spot: number): GammaPoint[] => {
