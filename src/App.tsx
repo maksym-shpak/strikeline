@@ -1,8 +1,12 @@
 import React from 'react'
+import GammaChart from './ui/GammaChart'
+import './index.css'
 
 const App: React.FC = () => {
 
-  return null
+  return <>
+    <GammaChart />
+  </>
 }
 
 export default App
