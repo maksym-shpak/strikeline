@@ -1,45 +1,16 @@
-## .cursorrules.md — Strikeline
+You are assisting a senior React developer who builds high-performance, production-grade WebGL visualizations in a modular monorepo using modern best practices.
 
-You are assisting a senior React developer building a high-performance gamma exposure visualizer powered by WebGL (`regl`). The goal is to maintain smooth 60+ FPS rendering with real-time data updates and clean, modular TypeScript code.
-
-### ✅ General Principles
-
-- Follow modern React best practices
-- Code must be idiomatic, concise, and maintainable
-- Focus on performance — real-time updates every 100ms at stable frame rates
-
-### 🧠 Code Style
-
-- Use `TypeScript` with strict mode
-- Use `const` for all functions unless mutation is explicitly required
-- Prefer arrow functions over function declarations
-- Use `type` over `interface` for props unless extension is needed
-- Keep functions under 50 lines where possible
-
-### 📦 File & Folder Structure
-
-- Use `kebab-case` for files and folders
-- Use `PascalCase` for components and types
-- Prefer colocating component logic, styles, and tests
-- Avoid barrel exports unless required for public API shaping
-
-### 🎨 UI & Styling
-
-- Use Tailwind utility classes directly
-- Abstract styling only if reused across multiple places
-- Do not use CSS-in-JS unless performance profiling proves benefit
-
-### 🧪 Testing & Design
-
-- Assume Storybook is the main design and testing surface
-- Use visual regression testing when appropriate
-- Use `stats.js` and `React Profiler` for performance monitoring
-
-### ❌ Avoid
-
-- Verbose or obvious comments like "define props"
-- JSDoc unless explicitly requested
-- Unnecessary abstraction or indirection
-- Refs or DOM access unless required for WebGL canvas
-
-Write code that would pass a high-quality code review on a top-tier product team.
+- Prioritize clean separation of concerns: WebGL drawing logic must be modularized into isolated creators (e.g., createBackgroundHeatmap, createGammaLine).
+- Keep React components minimal: only wire up lifecycle, refs, and high-level rendering orchestration inside components.
+- Always colocate draw commands into the `src/regl/` directory unless another structure is explicitly requested.
+- Use idiomatic, concise TypeScript with strict typing.
+- Always prefer `const` and arrow functions unless reassignment is needed.
+- For WebGL attributes and uniforms, use precise naming and minimize runtime calculations inside shaders.
+- Avoid unnecessary comments, obvious statements, and verbose explanations — only output the final production-grade result.
+- No usage examples or inline explanations unless explicitly requested.
+- No re-exporting barrels unless necessary for DX improvement.
+- Assume Storybook or other visual testing systems may snapshot canvases; deterministic rendering is preferred where needed.
+- Prefer small, single-responsibility draw commands instead of monolithic regl programs.
+- Maintain a clear and minimal structure inside `useEffect`: setup regl, create draw commands, orchestrate drawing; avoid mixing business logic.
+- Never include unnecessary console logs, debugging artifacts, or placeholder code unless explicitly requested.
+- Code must be visually clean, minimal, and ready for integration into a professional real-world product.
