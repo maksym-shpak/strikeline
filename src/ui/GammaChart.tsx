@@ -2,6 +2,10 @@ import { useEffect, useRef, useState } from 'react'
 import reglConstructor from 'regl'
 import { useGammaExposure } from '../data/useGammaExposure'
 import { createBackgroundHeatmap } from '../visualizations/createBackgroundHeatmap'
+import { createXAxis } from '../visualizations/createXAxis'
+import { createGammaLine } from '../visualizations/createGammaLine'
+import { createGammaGlow } from '../visualizations/createGammaGlow'
+import { createStrikeMarkers } from '../visualizations/createStrikeMarkers'
 
 const GammaChart = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -36,15 +40,25 @@ const GammaChart = () => {
 
         const regl = reglConstructor({ canvas })
 
-        const drawBackgroundHeatmap = createBackgroundHeatmap(regl, {
-            data,
-            width,
-            height,
-            dpr,
-        })
+        const backgroundHeatmap = createBackgroundHeatmap(regl, { data, width, height, dpr })
+        const xAxis = createXAxis(regl, { width, height, dpr, y: height * dpr / 2 })
+        const gammaGlow = createGammaGlow(regl, { data, width, height, dpr })
+        const gammaLine = createGammaLine(regl, { data, width, height, dpr })
+        const strikeMarkers = createStrikeMarkers(regl, { data, width, height, dpr })
 
         regl.clear({ color: [0, 0, 0, 1], depth: 1 })
-        drawBackgroundHeatmap()
+        regl._gl.enable(regl._gl.BLEND)
+        regl._gl.blendFunc(regl._gl.SRC_ALPHA, regl._gl.ONE_MINUS_SRC_ALPHA)
+
+        xAxis()
+        strikeMarkers()
+
+        gammaGlow({ expand: 3, alpha: 0.05 })
+        gammaGlow({ expand: 2, alpha: 0.1 })
+        gammaGlow({ expand: 1, alpha: 0.2 })
+        gammaLine()
+
+        backgroundHeatmap()
 
         return () => {
             regl.destroy()
