@@ -1,24 +1,24 @@
 import { Regl } from 'regl'
 
 type LastCloseLineParams = {
-    lastClose: number | null
-    width: number
-    height: number
-    dpr: number
-    data: { strike: number; gamma: number }[]
+  lastClose: number | null
+  width: number
+  height: number
+  dpr: number
+  data: { strike: number; gamma: number }[]
 }
 
 export const createLastCloseLine = (regl: Regl, { lastClose, width, height, dpr, data }: LastCloseLineParams) => {
-    const minStrike = Math.min(...data.map(p => p.strike))
-    const maxStrike = Math.max(...data.map(p => p.strike))
+  const minStrike = Math.min(...data.map(p => p.strike))
+  const maxStrike = Math.max(...data.map(p => p.strike))
 
-    const xScale = (strike: number) =>
-        ((strike - minStrike) / (maxStrike - minStrike)) * width * dpr
+  const xScale = (strike: number) =>
+    ((strike - minStrike) / (maxStrike - minStrike)) * width * dpr
 
-    const x = xScale(lastClose || 0)
+  const x = xScale(lastClose || 0)
 
-    return regl({
-        vert: `
+  return regl({
+    vert: `
       precision mediump float;
       attribute vec2 position;
       uniform vec2 uResolution;
@@ -29,22 +29,22 @@ export const createLastCloseLine = (regl: Regl, { lastClose, width, height, dpr,
         gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);
       }
     `,
-        frag: `
+    frag: `
       precision mediump float;
       void main() {
-        gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0); // Жовта лінія для Last Close
+        gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
       }
     `,
-        attributes: {
-            position: [
-                [x, 0],
-                [x, height * dpr],
-            ],
-        },
-        count: 2,
-        primitive: 'lines',
-        uniforms: {
-            uResolution: [width * dpr, height * dpr],
-        },
-    })
+    attributes: {
+      position: [
+        [x, 0],
+        [x, height * dpr],
+      ],
+    },
+    count: 2,
+    primitive: 'lines',
+    uniforms: {
+      uResolution: [width * dpr, height * dpr],
+    },
+  })
 }

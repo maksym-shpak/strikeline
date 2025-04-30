@@ -40,7 +40,7 @@ export const createStrikeMarkers = (regl: Regl, { data, width, height, dpr }: St
     frag: `
       precision mediump float;
       void main() {
-        gl_FragColor = vec4(0.7, 0.7, 0.7, 0.7); // Світло-сірий колір
+        gl_FragColor = vec4(0.7, 0.7, 0.7, 0.7);
       }
     `,
     attributes: {
