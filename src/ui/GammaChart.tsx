@@ -1,21 +1,25 @@
 import { useEffect, useRef, useState } from 'react'
 import reglConstructor from 'regl'
 import { useGammaExposure } from '../data/useGammaExposure'
+import { useVolatilityPoints } from '../data/useVolatilityPoints'
 import { createBackgroundHeatmap } from '../visualizations/createBackgroundHeatmap'
 import { createXAxis } from '../visualizations/createXAxis'
 import { createGammaLine } from '../visualizations/createGammaLine'
 import { createGammaGlow } from '../visualizations/createGammaGlow'
 import { createStrikeMarkers } from '../visualizations/createStrikeMarkers'
 import { createLastCloseLine } from '../visualizations/createLastCloseLine'
+import { createVolatilityMarker } from '../visualizations/createVolatilityMarker'
 
 
 const GammaChart = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null)
-    const data = useGammaExposure(200)
+    const data = useGammaExposure(5_000)
     const [dimensions, setDimensions] = useState({
         width: window.innerWidth,
         height: window.innerHeight,
     })
+
+    const { high, low } = useVolatilityPoints(data)
 
     const [lastClose, setLastClose] = useState<number | null>(null)
 
@@ -26,7 +30,7 @@ const GammaChart = () => {
             Math.abs(curr.gamma) > Math.abs(prev.gamma) ? curr : prev
         )
 
-        const range = 50 // діапазон навколо найбільшого gamma
+        const range = 50
         const minStrike = maxGammaPoint.strike - range
         const maxStrike = maxGammaPoint.strike + range
 
@@ -78,6 +82,29 @@ const GammaChart = () => {
         gammaGlow({ expand: 1, alpha: 0.2 })
         gammaLine()
         lastCloseLine()
+
+        if (high) {
+            createVolatilityMarker(regl, {
+                strike: high.strike,
+                width,
+                height,
+                dpr,
+                data,
+                color: [0.77, 0.51, 0.99, 0.8],
+            })()
+        }
+
+        if (low) {
+            createVolatilityMarker(regl, {
+                strike: low.strike,
+                width,
+                height,
+                dpr,
+                data,
+                color: [0.4, 0.5, 0.6, 0.6],
+            })()
+        }
+
 
 
         backgroundHeatmap()
